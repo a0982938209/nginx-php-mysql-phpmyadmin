@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+    nginx:
+      container_name: web-nginx
+      build: nginx
+      ports:
+          - 8080:80
+      volumes:
+          - ./public:/var/www/html
+      links:
+          - php72
+          - php56
+      networks:
+          - app-network
+      depends_on:
+          - php72
+          - php56
+        
+    php72:
+      container_name: web_php72
+      build: php
+      volumes:
+          - ./public:/var/www/html
+          - ./php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      working_dir: /var/www
+      networks:
+          - app-network
+
+    
+    php56:
+        container_name: web_php56
+        image: php:5.6-fpm
+        volumes:
+            - ./public:/var/www/html
+        working_dir: /var/www
+        networks:
+            - app-network
+  
+    phpmyadmin:
+        container_name: web_phpmyadmin
+        image: phpmyadmin
+        ports:
+            - 8081:80
+        environment:
+            - PMA_ARBITRARY=1
+        depends_on:
+            - mysql
+        networks:
+            - app-network
+
+    # mariadb:
+    #     container_name: web_mariadb
+    #     image: mariadb:10.3
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: pwd123
+    #         MYSQL_USER: dev
+    #         MYSQL_PASSWORD: dev
+    #     ports: 
+    #         - 6608:3306
+    #     networks:
+    #         - app-network
+
+    mysql:
+        container_name: web_mysql
+        image: mysql:5.6
+        environment:
+            MYSQL_ROOT_PASSWORD: pwd123
+            MYSQL_USER: dev
+            MYSQL_PASSWORD: dev
+        ports: 
+            - 6608:3306
+        networks:
+            - app-network
+
+networks:
+  app-network:
+    driver: bridge
