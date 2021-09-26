@@ -1,29 +1,12 @@
 <?php
-$mysql_hostname = "p:localhost:6608";
-$mysql_user = "root";
-$mysql_password = "pwd123";
-$mysql_database = "test";
-
-
-
-$con=mysqli_connect($mysql_hostname,$mysql_user,$mysql_password,$mysql_database); 
-        if (!$con) { die("連結錯誤: " . mysqli_connect_error());} 
-        mysqli_query($con,"SET NAMES utf8");
-echo 'ssss';
-exit;
-$mysqli = new mysqli($mysql_hostname, $mysql_user, $mysql_password,$mysql_database);
-
-if ($mysqli->connect_errno) {
-    die("Connect failed: ".$mysqli->connect_error);
-}else{
-    die("Connect success");
+$conn = new mysqli("web_mysql", "root", "pwd123", "test");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$query = "SELECT * FROM name";
-$result = $mysqli->query($query);
-
+$sql = "SELECT * FROM name";
+$result = $conn->query($sql);
 while($row = $result->fetch_array()){
-  echo $row["name"];
-}
-
-?>
+    echo $row["name"];
+  }
+$conn->close();

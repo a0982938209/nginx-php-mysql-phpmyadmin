@@ -1,24 +1,15 @@
-FROM php:7.2-fpm
+FROM php:5.6.20-fpm
 
 
 # Set working directory
 WORKDIR /var/www
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl
+RUN apt-get update \
+    && apt-get install -y git
 
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
